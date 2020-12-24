@@ -25,11 +25,11 @@ add_filter( 'determine_current_user', 'namespace_determine_current_user', 10 );
 function namespace_determine_current_user( $user ) {
 
 	// Only checked, not saved or output anywhere.
-    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 	$request_uri = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
 
 	// Validated below with TokenVerifier.
-    // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 	$auth_header_raw = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
 	$auth_header_raw = wp_unslash( $auth_header_raw );
 
