@@ -13,6 +13,4 @@ This repo is more of an example rather than a deployable piece of software. To g
 1. Move those `define()` statements from `env.example.php` to your `wp-config.php` and define them
 1. Move `wp-rest-api-auth0.php` and the `wp-rest-api-auth0` directory into the `wp-content/mu-plugins` directory in the WordPress install (make one if it does exist)
 
-You can get this running to test using Docker:
-
-<script src="https://gist.github.com/joshcanhelp/0e35b657ca03142e3d79595c28bb3ed7.js"></script>
+You can get this running to test using Docker [using this Gist](https://gist.github.com/joshcanhelp/0e35b657ca03142e3d79595c28bb3ed7).
