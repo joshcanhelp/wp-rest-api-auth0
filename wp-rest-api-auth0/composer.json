@@ -1,0 +1,15 @@
+{
+    "name": "joshcanhelp/wp-rest-api-oauth2",
+    "description": "Protect a WP REST API with JWT-formatted access tokens",
+    "type": "library",
+    "require": {
+        "auth0/auth0-php": "^7.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Josh Cunningham",
+            "email": "josh@joshcanhelp.com"
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+<?php require 'wp-rest-api-auth0/index.php';
