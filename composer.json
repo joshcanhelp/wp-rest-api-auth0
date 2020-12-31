@@ -2,6 +2,15 @@
     "name": "joshcanhelp/wp-rest-api-auth0",
     "description": "Protect a WP REST API with OAuth2 using Auth0",
     "type": "wordpress-muplugin",
+    "keywords": [
+        "WordPress",
+        "API",
+        "REST API",
+        "OAuth2",
+        "Auth0",
+        "access token"
+    ],
+    "homepage": "https://www.joshcanhelp.com/protect-wordpress-rest-api-with-oauth2-auth0/",
     "require": {
         "php": "^7.1",
         "auth0/auth0-php": "^7.5"
