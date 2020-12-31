@@ -1,5 +1,9 @@
 # Protect your WordPress REST API with Auth0
 
+[![Latest Stable Version](https://poser.pugx.org/joshcanhelp/wp-rest-api-auth0/v/stable)](https://packagist.org/packages/joshcanhelp/wp-rest-api-auth0)
+[![License](https://poser.pugx.org/joshcanhelp/wp-rest-api-auth0/license)](https://packagist.org/packages/joshcanhelp/wp-rest-api-auth0)
+[![Total Downloads](https://poser.pugx.org/joshcanhelp/wp-rest-api-auth0/downloads)](https://packagist.org/packages/joshcanhelp/wp-rest-api-auth0)
+
 This repo contains a working MU plugin that will receive and validate access tokens obtained from Auth0. For information on how this works and the values used withing please see the post here:
 
 **[Protect your WordPress REST API with OAuth2 using Auth0](https://www.joshcanhelp.com/protect-wordpress-rest-api-with-oauth2-auth0/)**
