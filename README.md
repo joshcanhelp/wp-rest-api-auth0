@@ -1,12 +1,12 @@
-# Protect WordPress REST API with Auth0
+# Protect your WordPress REST API with Auth0
 
 This repo contains a working MU plugin that will receive and validate access tokens obtained from Auth0. For information on how this works and the values used withing please see the post here:
 
 **[Protect your WordPress REST API with OAuth2 using Auth0](https://www.joshcanhelp.com/protect-wordpress-rest-api-with-oauth2-auth0/)**
 
-## Installation with Composer
+## Installation 
 
-Add your Auth0 credentials to `wp-config.php`.
+Add your Auth0 credentials to `wp-config.php` or another location that will get loaded before plugins.
 
 ```php
 // Auth0 credentials
@@ -15,20 +15,22 @@ define( 'AUTH0_API_AUDIENCE', 'API identifier for the WP REST API' );
 define( 'AUTH0_API_SIGNING_SECRET', 'API signing secret from Auth0' );
 ```
 
-Install this package.
+### Install with Composer
+
+Install this package:
 
 ```bash
 composer require joshcanhelp/wp-rest-api-auth0
 ```
 
-## Installation with git
+### Install manually
 
-This repo is more of an example rather than a deployable piece of software. To get this running on an existing WordPress site:
+To get this running on an existing WordPress site not managed with Composer:
 
-1. Clone this repo somewhere outside of the WordPress installation
-1. Run `composer install` in the `wp-rest-api-auth0` directory
-1. Move those `define()` statements from `env.example.php` to your `wp-config.php` and define them
-1. Move `wp-rest-api-auth0.php` and the `wp-rest-api-auth0` directory into the `wp-content/mu-plugins` directory in the WordPress install (make one if it does exist)
+1. Download or clone this repo outside of your WordPress installation
+1. Make a directory called `wp-rest-api-auth0` in the root of the repo and move `wp-rest-api-auth0.php` and `composer.json` into that directory
+1. [Download Composer locally](https://getcomposer.org/download/) into that direcory and run `php composer.phar install` there
+1. Move `wp-rest-api-auth0-loader.php` and the `wp-rest-api-auth0` directory into the `wp-content/mu-plugins` directory of the WordPress install (make one if it does not exist)
 
 ## Testing with Docker
 
