@@ -24,7 +24,7 @@ jobs:
       - name: "Determine tag"
         id: "determine_git_tag"
         shell: "bash"
-        run: "echo ::set-output name=\"tag_name::${GITHUB_REF/refs\/tags\//}\""
+        run: "echo \"::set-output name=tag_name::${GITHUB_REF/refs\/tags\//}\""
 
       - name: "Create directory structure"
         run: |
