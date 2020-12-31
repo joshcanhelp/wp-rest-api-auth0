@@ -33,5 +33,3 @@ This repo is more of an example rather than a deployable piece of software. To g
 ## Testing with Docker
 
 You can get this running to test using Docker [using this Gist](https://gist.github.com/joshcanhelp/0e35b657ca03142e3d79595c28bb3ed7).
-
-TODO Move that gist into this repo.
