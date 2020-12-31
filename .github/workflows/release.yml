@@ -29,7 +29,7 @@ jobs:
       - name: "Create directory structure"
         run: |
           mkdir wp-rest-api-auth0
-          cp LICENSE README.md wp-rest-api-auth0.php vendor/ wp-rest-api-auth0/
+          cp -r LICENSE README.md wp-rest-api-auth0.php vendor/ wp-rest-api-auth0/
 
       - name: "Create ZIP file"
         shell: "bash"
