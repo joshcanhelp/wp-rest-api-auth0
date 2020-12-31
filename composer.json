@@ -1,8 +1,9 @@
 {
-    "name": "joshcanhelp/wp-rest-api-oauth2",
-    "description": "Protect a WP REST API with JWT-formatted access tokens",
-    "type": "library",
+    "name": "joshcanhelp/wp-rest-api-auth0",
+    "description": "Protect a WP REST API with OAuth2 using Auth0",
+    "type": "wordpress-muplugin",
     "require": {
+        "php": "^7.1",
         "auth0/auth0-php": "^7.5"
     },
     "license": "MIT",
