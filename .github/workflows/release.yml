@@ -32,7 +32,6 @@ jobs:
           cp -r LICENSE README.md wp-rest-api-auth0.php vendor/ wp-rest-api-auth0/
 
       - name: "Create ZIP file"
-        shell: "bash"
         run: "zip -r -9 wp-rest-api-auth0.zip wp-rest-api-auth0-loader.php wp-rest-api-auth0/"
 
       - name: "Upload ZIP as release asset"
