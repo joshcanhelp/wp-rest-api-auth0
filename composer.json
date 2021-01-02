@@ -21,5 +21,10 @@
             "name": "Josh Cunningham",
             "email": "josh@joshcanhelp.com"
         }
-    ]
+    ],
+    "autoload": {
+        "files": [
+            "wp-rest-api-auth0.php"
+        ]
+    }
 }
