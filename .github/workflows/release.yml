@@ -1,0 +1,44 @@
+name: "Publish release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    name: "Publish release"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout code"
+        uses: "actions/checkout@v2"
+
+      - name: "Setup PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "7.1"
+
+      - name: "Install dependencies"
+        run: "composer update --no-interaction --no-dev --prefer-dist"
+
+      - name: "Determine tag"
+        id: "determine_git_tag"
+        shell: "bash"
+        run: echo "::set-output name=tag_name::${GITHUB_REF/refs\/tags\//}"
+
+      - name: "Create directory structure"
+        run: |
+          mkdir wp-rest-api-auth0
+          cp -r LICENSE README.md wp-rest-api-auth0.php vendor/ wp-rest-api-auth0/
+
+      - name: "Create ZIP file"
+        run: "zip -r -9 wp-rest-api-auth0.zip wp-rest-api-auth0-loader.php wp-rest-api-auth0/"
+
+      - name: "Upload ZIP as release asset"
+        uses: "svenstaro/upload-release-action@v2"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          tag: "${{ github.ref }}"
+          file: "wp-rest-api-auth0.zip"
+          asset_name: "wp-rest-api-auth0-${{ steps.determine_git_tag.outputs.tag_name }}.zip"
+          overwrite: true
