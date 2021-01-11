@@ -27,14 +27,11 @@ Install this package:
 composer require joshcanhelp/wp-rest-api-auth0
 ```
 
+Require the autoloader at some point when `add_action` is available, like in `wp-content/mu-plugins`.
+
 ### Install manually
 
-To get this running on an existing WordPress site not managed with Composer:
-
-1. Download or clone this repo outside of your WordPress installation
-1. Make a directory called `wp-rest-api-auth0` in the root of the repo and move `wp-rest-api-auth0.php` and `composer.json` into that directory
-1. [Download Composer locally](https://getcomposer.org/download/) into that direcory and run `php composer.phar install` there
-1. Move `wp-rest-api-auth0-loader.php` and the `wp-rest-api-auth0` directory into the `wp-content/mu-plugins` directory of the WordPress install (make one if it does not exist)
+To install this manually without Compsoer, just download the [latest release ZIP](https://github.com/joshcanhelp/wp-rest-api-auth0/releases) and upload through the admin interface. Please note that this plugin will not update automatically; updates will need to be made by deleting and re-adding (make sure your site is in maintenance mode) or directly via an FTP client (not recommended).
 
 ## Testing with Docker
 
