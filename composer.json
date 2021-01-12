@@ -24,7 +24,7 @@
     ],
     "autoload": {
         "files": [
-            "wp-rest-api-auth0.php"
+            "src/wp-rest-api-auth0.php"
         ]
     }
 }
