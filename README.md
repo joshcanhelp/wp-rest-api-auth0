@@ -31,8 +31,24 @@ Require the autoloader at some point when `add_action` is available, like in `wp
 
 ### Install manually
 
-To install this manually without Compsoer, just download the [latest release ZIP](https://github.com/joshcanhelp/wp-rest-api-auth0/releases) and upload through the admin interface. Please note that this plugin will not update automatically; updates will need to be made by deleting and re-adding (make sure your site is in maintenance mode) or directly via an FTP client (not recommended).
+To install this manually without Composer, just download the [latest release ZIP](https://github.com/joshcanhelp/wp-rest-api-auth0/releases) and upload through the admin interface. Please note that this plugin will not update automatically; updates will need to be made by deleting and re-adding (make sure your site is in maintenance mode) or directly via an FTP client (not recommended).
 
 ## Testing with Docker
 
 You can get this running to test using Docker [using this Gist](https://gist.github.com/joshcanhelp/0e35b657ca03142e3d79595c28bb3ed7).
+
+### Troubleshooting
+
+If API requsts aren't working, Apache might not be passing authorization headers to PHP. Try adding this line (or similar methods) to `.htaccess`:
+
+```
+SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
+```
+
+Also, make sure your WP API endpoint doesn't follow this pattern, where `/index.php/` is required before `/wp-json/`:
+
+```
+Example:
+https://<your.site>/index.php/wp-json/
+```
+See [this solution](http://dejanjanosevic.info/remove-index-php-permalink-in-wordpress/) to help resolve this index.php issue.

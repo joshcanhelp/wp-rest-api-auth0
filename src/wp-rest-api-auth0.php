@@ -9,9 +9,6 @@ declare(strict_types=1);
 
 namespace JoshCanHelp\WordPress\RestApiAuth0;
 
-use Auth0\SDK\Helpers\Tokens\SymmetricVerifier;
-use Auth0\SDK\Helpers\Tokens\TokenVerifier;
-
 add_filter( 'determine_current_user', __NAMESPACE__ . '\\determine_current_user', 10, 1 );
 
 /**
@@ -49,10 +46,10 @@ function determine_current_user( $user ) {
 	// If we cannot validate the token for some reason, the request is processed without auth.
 
 	// Verify the incoming access token.
-	$token_verifier = new TokenVerifier(
+	$token_verifier = new \WP_Auth0_IdTokenVerifier(
 		'https://' . AUTH0_DOMAIN . '/',
 		AUTH0_API_AUDIENCE,
-		new SymmetricVerifier( AUTH0_API_SIGNING_SECRET )
+		new \WP_Auth0_SymmetricVerifier( AUTH0_API_SIGNING_SECRET )
 	);
 
 	try {
