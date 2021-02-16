@@ -12,11 +12,4 @@
 
 declare(strict_types=1);
 
-if (
-    ! class_exists( 'Auth0\\SDK\\Helpers\\Tokens\\SymmetricVerifier' )
-    && is_file( __DIR__ . '/vendor/autoload.php' )
-) {
-    require_once __DIR__ . '/vendor/autoload.php';
-}
-
 require_once __DIR__ . '/src/wp-rest-api-auth0.php';

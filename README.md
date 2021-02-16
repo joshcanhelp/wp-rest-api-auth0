@@ -10,7 +10,7 @@ This repo contains a working MU plugin that will receive and validate access tok
 
 ## Installation 
 
-Add your Auth0 credentials to `wp-config.php` or another location that will get loaded before plugins.
+First, install the [Login by Auth0 plugin](https://wordpress.org/plugins/auth0/), then add your Auth0 credentials to `wp-config.php` or another location that will get loaded before plugins.
 
 ```php
 // Auth0 credentials

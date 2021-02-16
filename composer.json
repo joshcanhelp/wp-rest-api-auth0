@@ -12,8 +12,7 @@
     ],
     "homepage": "https://www.joshcanhelp.com/protect-wordpress-rest-api-with-oauth2-auth0/",
     "require": {
-        "php": "^7.1",
-        "auth0/auth0-php": "^7.5"
+        "php": "^7.1"
     },
     "license": "MIT",
     "authors": [
