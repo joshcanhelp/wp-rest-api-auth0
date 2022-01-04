@@ -20,6 +20,7 @@ add_filter( 'determine_current_user', __NAMESPACE__ . '\\determine_current_user'
  * @return int|null
  */
 function determine_current_user( $user ) {
+	global $wpdb;
 
 	// Only checked, not saved or output anywhere.
 	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput
@@ -69,7 +70,7 @@ function determine_current_user( $user ) {
 	$wp_user = current(
 		get_users(
 			array(
-				'meta_key'   => 'wp_auth0_id',
+				'meta_key'   => $wpdb->prefix . 'auth0_id',
 				'meta_value' => $decoded_token['sub'],
 			)
 		)
