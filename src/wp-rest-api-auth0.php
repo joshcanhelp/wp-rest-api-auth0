@@ -48,9 +48,9 @@ function determine_current_user( $user ) {
 
 	// Verify the incoming access token.
 	$token_verifier = new \WP_Auth0_IdTokenVerifier(
-		'https://' . AUTH0_DOMAIN . '/',
-		AUTH0_API_AUDIENCE,
-		new \WP_Auth0_SymmetricVerifier( AUTH0_API_SIGNING_SECRET )
+		'https://' . \AUTH0_DOMAIN . '/',
+		\AUTH0_API_AUDIENCE,
+		new \WP_Auth0_SymmetricVerifier( \AUTH0_API_SIGNING_SECRET )
 	);
 
 	try {
