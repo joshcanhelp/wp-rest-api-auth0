@@ -35,9 +35,6 @@ function determine_current_user( $user ) {
 
 	// Check if this is a WP REST API request.
 	if ( 1 !== preg_match( '/^\/' . rest_get_url_prefix() . '(.*)/', $request_uri ) ) {
-		if ($debug_mode) {
-			error_log('WP REST API Auth0: Not a REST API request');
-		}
 		return $user;
 	}
 
