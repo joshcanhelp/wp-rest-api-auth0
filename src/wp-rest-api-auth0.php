@@ -37,9 +37,13 @@ function determine_current_user( $user ) {
 	// Check for a token in the Authorization header.
 	// Validated below with TokenVerifier.
 	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-	$auth_header_raw = wp_unslash( $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+	$auth_header = $_SERVER['Authorization'] ?? 
+		$_SERVER['authorization'] ??
+		$_SERVER['HTTP_AUTHORIZATION'] ?? 
+		$_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+	$auth_header_raw = wp_unslash( $auth_header );
 	$auth_header_parts = explode( ' ', $auth_header_raw ?? '' );
-	if ( 'Bearer' !== $auth_header_parts[0] || empty( $auth_header_parts[1] ) ) {
+	if ( 'bearer' !== strtolower($auth_header_parts[0]) || empty( $auth_header_parts[1] ) ) {
 		if ($debug_mode) {
 			error_log('WP REST API Auth0: No access token found in the request');
 		}
