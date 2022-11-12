@@ -77,22 +77,22 @@ function determine_current_user( $user ) {
 	// We don't have a user to associate this call to.
 	if ( ! $decoded_token['sub'] ) {
 		if ($debug_mode) {
-			error_log('WP REST API Auth0: No sub claim found');
+			error_log('WP REST API Auth0: No sub claim found in the access token');
 		}
 		return null;
 	}
 
 	if ($debug_mode) {
-		error_log('WP REST API Auth0: Looking for Auth0 user ID ' . $decoded_token['sub']);
+		error_log('WP REST API Auth0: Looking for Auth0 user ID ' . $decoded_token['sub'] . '...');
 	}
 
 	// Look for a WordPress user with the incoming Auth0 ID.
 	$wp_user = current(
 		get_users(
-			array(
+			[
 				'meta_key'   => $wpdb->prefix . 'auth0_id',
 				'meta_value' => $decoded_token['sub'],
-			)
+			]
 		)
 	);
 
