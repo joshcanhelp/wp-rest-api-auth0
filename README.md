@@ -17,6 +17,7 @@ First, install the [Login by Auth0 plugin](https://wordpress.org/plugins/auth0/)
 define( 'AUTH0_DOMAIN', 'Your Auth0 domain' );
 define( 'AUTH0_API_AUDIENCE', 'API identifier for the WP REST API' );
 define( 'AUTH0_API_SIGNING_SECRET', 'API signing secret from Auth0' );
+define( 'AUTH0_API_DEBUG', 'Set to `true` to add debugging log entries' );
 ```
 
 ### Install with Composer
@@ -39,7 +40,9 @@ You can get this running to test using Docker [using this Gist](https://gist.git
 
 ### Troubleshooting
 
-If API requsts aren't working, Apache might not be passing authorization headers to PHP. Try adding this line (or similar methods) to `.htaccess`:
+Try setting `AUTH0_API_DEBUG` to `true` and watching your PHP error log for information on failures.
+
+If API requests aren't working, Apache might not be passing authorization headers to PHP. Try adding this line (or similar methods) to `.htaccess`:
 
 ```
 SetEnvIf Authorization .+ HTTP_AUTHORIZATION=$0
@@ -51,4 +54,5 @@ Also, make sure your WP API endpoint doesn't follow this pattern, where `/index.
 Example:
 https://<your.site>/index.php/wp-json/
 ```
+
 See [this solution](http://dejanjanosevic.info/remove-index-php-permalink-in-wordpress/) to help resolve this index.php issue.
