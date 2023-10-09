@@ -20,6 +20,8 @@ define( 'AUTH0_API_SIGNING_SECRET', 'API signing secret from Auth0' );
 define( 'AUTH0_API_DEBUG', 'Set to `true` to add debugging log entries' );
 ```
 
+This plugin will automatically load a file called `env.php` in the same folder, if it exists, which can be used for the values above.
+
 ### Install with Composer
 
 Install this package:
@@ -28,17 +30,17 @@ Install this package:
 composer require joshcanhelp/wp-rest-api-auth0
 ```
 
-Require the autoloader at some point when `add_action` is available, like in `wp-content/mu-plugins`.
+Require the Composer autoloader at some point when `add_action` is available, like in `wp-content/mu-plugins`. 
 
 ### Install manually
 
 To install this manually without Composer, just download the [latest release ZIP](https://github.com/joshcanhelp/wp-rest-api-auth0/releases) and upload through the admin interface. Please note that this plugin will not update automatically; updates will need to be made by deleting and re-adding (make sure your site is in maintenance mode) or directly via an FTP client (not recommended).
 
-## Testing with Docker
+### Testing with Docker
 
-You can get this running to test using Docker [using this Gist](https://gist.github.com/joshcanhelp/0e35b657ca03142e3d79595c28bb3ed7).
+You can get this running to test it out locally with Docker using [this Gist](https://gist.github.com/joshcanhelp/0e35b657ca03142e3d79595c28bb3ed7).
 
-### Troubleshooting
+## Troubleshooting
 
 Try setting `AUTH0_API_DEBUG` to `true` and watching your PHP error log for information on failures.
 
