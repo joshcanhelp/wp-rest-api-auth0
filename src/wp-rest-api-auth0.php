@@ -9,6 +9,11 @@ declare(strict_types=1);
 
 namespace JoshCanHelp\WordPress\RestApiAuth0;
 
+use Auth0\SDK\Token;
+use Auth0\SDK\Auth0;
+use Auth0\SDK\Configuration\SdkConfiguration;
+use Auth0\WordPress\Actions\Authentication;
+
 add_filter( 'determine_current_user', __NAMESPACE__ . '\\determine_current_user', 10, 1 );
 
 /**
@@ -51,6 +56,14 @@ function determine_current_user( $user ) {
 	}
 	$access_token = $auth_header_parts[1];
 
+	// Make sure the WP-Auth0 plugin is installed
+	if ( !function_exists('wpAuth0') ) {
+		if ( $debug_mode ) {
+			error_log('WP REST API Auth0: WP-Auth0 plugin is not installed');
+		}
+		return $user;
+	}
+
 	////
 	/// From this point on, we're going to treat the request as OAuth2 protected.
 	/// If we cannot validate the token for some reason, the request is processed without auth.
@@ -58,14 +71,22 @@ function determine_current_user( $user ) {
 
 	// Verify the incoming JWT access token.
 	// Auth0-generated access tokens for users will be ID token shaped.
-	$token_verifier = new \WP_Auth0_IdTokenVerifier(
-		'https://' . \AUTH0_DOMAIN . '/',
-		\AUTH0_API_AUDIENCE,
-		new \WP_Auth0_SymmetricVerifier( \AUTH0_API_SIGNING_SECRET )
+
+	$configuration = new SdkConfiguration(
+		strategy: SdkConfiguration::STRATEGY_API,
+		tokenAlgorithm: Token::ALGO_HS256,
+		domain: AUTH0_DOMAIN,
+		audience: [ AUTH0_API_AUDIENCE ],
+		clientSecret: AUTH0_API_SIGNING_SECRET
 	);
 
+	$auth0_php_sdk = new Auth0($configuration);
+
 	try {
-		$decoded_token = $token_verifier->verify( $access_token );
+		$decoded_token = $auth0_php_sdk->decode(
+			token: $access_token,
+			tokenType: Token::TYPE_ACCESS_TOKEN,
+		)->toArray();
 	} catch ( \Exception $e ) {
 		// An exception here means the token was invalid for some reason and cannot be accepted.
 		if ($debug_mode) {
@@ -86,15 +107,15 @@ function determine_current_user( $user ) {
 		error_log('WP REST API Auth0: Looking for Auth0 user ID ' . $decoded_token['sub'] . '...');
 	}
 
-	// Look for a WordPress user with the incoming Auth0 ID.
-	$wp_user = current(
-		get_users(
-			[
-				'meta_key'   => $wpdb->prefix . 'auth0_id',
-				'meta_value' => $decoded_token['sub'],
-			]
-		)
-	);
+	$wp_sdk = \wpAuth0();
+	$wp_sdk_auth = new Authentication($wp_sdk);
+	$wp_user = $wp_sdk_auth->getAccountByConnection($decoded_token['sub']);
+
+	$allow_flexible_match = $wp_sdk->getOption('accounts', 'matching') !== 'strict';
+
+	if (! $wp_user && $allow_flexible_match && $decoded_token['https://wp//verified_email']) {
+		$wp_user = \get_user_by('email', $decoded_token['https://wp//verified_email']);
+	}
 
 	// Could not find a user with the incoming Auth0 ID.
 	if ( ! $wp_user ) {
@@ -111,6 +132,8 @@ function determine_current_user( $user ) {
 		error_log('WP REST API Auth0: Scopes requested - ' . $decoded_token['scope']);
 	}
 
+	// Iterate through all permissions that this user has and remove any that 
+	// do not appear in the token's scope claim.
 	foreach ( $wp_user->allcaps as $cap => $value ) {
 		if ( ! in_array( $cap, $access_token_scopes, true ) ) {
 			$wp_user->allcaps[ $cap ] = 0;
