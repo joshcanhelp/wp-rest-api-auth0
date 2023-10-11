@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<ruleset>
+    <file>.</file>
+
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/env.php</exclude-pattern>
+
+    <!-- Only check PHP files. -->
+    <arg name="extensions" value="php"/>
+
+    <!-- Show progress, show the error codes for each message (source). -->
+    <arg value="sp"/>
+
+    <!-- Strip the filepaths down to the relevant bit. -->
+    <arg name="basepath" value="."/>
+
+    <!-- Show coloured output, if available. -->
+    <arg name="colors"/>
+
+    <!--
+    PHPCompatibility sniffs to check for PHP cross-version incompatible code.
+    https://github.com/PHPCompatibility/PHPCompatibility
+    -->
+    <config name="testVersion" value="7.0-"/>
+    <config name="minimum_supported_wp_version" value="5.4.2"/>
+
+    <rule ref="PHPCompatibilityWP"/>
+    <rule ref="Generic.CodeAnalysis">
+    </rule>
+    <rule ref="WordPress">
+        <exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound"/>
+        <exclude name="WordPress.PHP.DevelopmentFunctions.error_log_error_log"/>
+    </rule>
+    <rule ref="Universal">
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax.Found"/>
+        <exclude name="Universal.ControlStructures.IfElseDeclaration.NoNewLine"/>
+        <exclude name="Universal.Namespaces.EnforceCurlyBraceSyntax.Forbidden"/>
+    </rule>
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array" value="wp_auth0" />
+        </properties>
+    </rule>
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array" value="wp-auth0" />
+        </properties>
+    </rule>
+    <rule ref="WordPress.NamingConventions">
+        <exclude-pattern>/examples/*</exclude-pattern>
+    </rule>
+    <rule ref="WordPress.PHP.DevelopmentFunctions">
+        <exclude-pattern>/examples/*</exclude-pattern>
+    </rule>
+</ruleset>
