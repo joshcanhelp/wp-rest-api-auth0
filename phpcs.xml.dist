@@ -36,20 +36,4 @@
         <exclude name="Universal.ControlStructures.IfElseDeclaration.NoNewLine"/>
         <exclude name="Universal.Namespaces.EnforceCurlyBraceSyntax.Forbidden"/>
     </rule>
-    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
-        <properties>
-            <property name="prefixes" type="array" value="wp_auth0" />
-        </properties>
-    </rule>
-    <rule ref="WordPress.WP.I18n">
-        <properties>
-            <property name="text_domain" type="array" value="wp-auth0" />
-        </properties>
-    </rule>
-    <rule ref="WordPress.NamingConventions">
-        <exclude-pattern>/examples/*</exclude-pattern>
-    </rule>
-    <rule ref="WordPress.PHP.DevelopmentFunctions">
-        <exclude-pattern>/examples/*</exclude-pattern>
-    </rule>
 </ruleset>
