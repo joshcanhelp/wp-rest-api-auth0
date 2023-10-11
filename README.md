@@ -14,7 +14,6 @@ First, install the [Login by Auth0 plugin](https://wordpress.org/plugins/auth0/)
 
 ```php
 // Auth0 credentials
-define( 'AUTH0_DOMAIN', 'Your Auth0 domain' );
 define( 'AUTH0_API_AUDIENCE', 'API identifier for the WP REST API' );
 define( 'AUTH0_API_SIGNING_SECRET', 'API signing secret from Auth0' );
 define( 'AUTH0_API_DEBUG', 'Set to `true` to add debugging log entries' );
@@ -42,7 +41,7 @@ You can get this running to test it out locally with Docker using [this Gist](ht
 
 ## Troubleshooting
 
-Try setting `AUTH0_API_DEBUG` to `true` and watching your PHP error log for information on failures.
+Try setting `AUTH0_API_DEBUG` to `true` and watching your WP error log for information on failures.
 
 If API requests aren't working, Apache might not be passing authorization headers to PHP. Try adding this line (or similar methods) to `.htaccess`:
 

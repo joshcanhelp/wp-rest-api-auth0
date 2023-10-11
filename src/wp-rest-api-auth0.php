@@ -63,7 +63,7 @@ function determine_current_user( $user ) {
 	// Verify the incoming JWT access token.
 	// Auth0-generated access tokens for users will be ID token shaped.
 	$token_verifier = new \WP_Auth0_IdTokenVerifier(
-		'https://' . \AUTH0_DOMAIN . '/',
+		'https://' . \WP_Auth0_Options::Instance()->get('domain') . '/',
 		\AUTH0_API_AUDIENCE,
 		new \WP_Auth0_SymmetricVerifier( \AUTH0_API_SIGNING_SECRET )
 	);
@@ -77,6 +77,8 @@ function determine_current_user( $user ) {
 		}
 		return null;
 	}
+
+	
 
 	// We don't have a user to associate this call to.
 	if ( ! $decoded_token['sub'] ) {
