@@ -33,13 +33,18 @@ function determine_current_user( $user ) {
 		return $user;
 	}
 
-	// Check for a token in the Authorization header.
-	// Validated below with TokenVerifier.
-	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-	$auth_header       = $_SERVER['Authorization'] ??
+	// Unslashed and validated as JWT below.
+	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+	$auth_header = $_SERVER['Authorization'] ??
 		$_SERVER['authorization'] ??
 		$_SERVER['HTTP_AUTHORIZATION'] ??
 		$_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
+
 	$auth_header_raw   = wp_unslash( $auth_header );
 	$auth_header_parts = explode( ' ', $auth_header_raw ?? '' );
 	if ( 'bearer' !== strtolower( $auth_header_parts[0] ) || empty( $auth_header_parts[1] ) ) {
@@ -127,8 +132,5 @@ function determine_current_user( $user ) {
 		error_log( 'WP REST API Auth0: Setting user as WP UID ' . $wp_user->ID );
 	}
 
-	// Set the current user as this modified user.
-	global $current_user;
-	$current_user = $wp_user;
 	return $wp_user->ID;
 }
