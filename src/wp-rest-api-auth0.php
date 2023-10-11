@@ -126,6 +126,11 @@ function determine_current_user( $user ) {
 				$wp_user->allcaps[ $cap ] = 0;
 			}
 		}
+
+		// This is not ideal but there isn't another way to adjust current user caps.
+		global $current_user;
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$current_user = $wp_user;
 	}
 
 	if ( $debug_mode ) {
