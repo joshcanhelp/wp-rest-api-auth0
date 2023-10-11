@@ -87,14 +87,19 @@ function determine_current_user( $user ) {
 	}
 
 	// Look for a WordPress user with the incoming Auth0 ID.
-	$wp_user = current(
-		get_users(
-			[
-				'meta_key'   => $wpdb->prefix . 'auth0_id',
-				'meta_value' => $decoded_token['sub'],
-			]
-		)
-	);
+	if ('client-credentials' === $decoded_token['gty']) {
+		$m2m_client_id = str_replace('@clients', '', $decoded_token['sub']);
+		$wp_user = get_user_by('login', $m2m_client_id );
+	} else {
+		$wp_user = current(
+			get_users(
+				[
+					'meta_key'   => $wpdb->prefix . 'auth0_id',
+					'meta_value' => $decoded_token['sub'],
+				]
+			)
+		);
+	}
 
 	// Could not find a user with the incoming Auth0 ID.
 	if ( ! $wp_user ) {
@@ -105,15 +110,17 @@ function determine_current_user( $user ) {
 	}
 
 	// Pull the scopes out of the access token and adjust the user accordingly.
-	$access_token_scopes = explode( ' ', $decoded_token['scope'] );
+	if ($decoded_token['scope']) {
+		$access_token_scopes = explode( ' ', $decoded_token['scope'] );
 
-	if ($debug_mode) {
-		error_log('WP REST API Auth0: Scopes requested - ' . $decoded_token['scope']);
-	}
+		if ($debug_mode) {
+			error_log('WP REST API Auth0: Scopes requested - ' . $decoded_token['scope']);
+		}
 
-	foreach ( $wp_user->allcaps as $cap => $value ) {
-		if ( ! in_array( $cap, $access_token_scopes, true ) ) {
-			$wp_user->allcaps[ $cap ] = 0;
+		foreach ( $wp_user->allcaps as $cap => $value ) {
+			if ( ! in_array( $cap, $access_token_scopes, true ) ) {
+				$wp_user->allcaps[ $cap ] = 0;
+			}
 		}
 	}
 
