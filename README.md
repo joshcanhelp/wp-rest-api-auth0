@@ -1,6 +1,5 @@
 # Protect your WordPress REST API with Auth0
 
-[![Latest Stable Version](https://poser.pugx.org/joshcanhelp/wp-rest-api-auth0/v/stable)](https://packagist.org/packages/joshcanhelp/wp-rest-api-auth0)
 [![License](https://poser.pugx.org/joshcanhelp/wp-rest-api-auth0/license)](https://packagist.org/packages/joshcanhelp/wp-rest-api-auth0)
 [![Total Downloads](https://poser.pugx.org/joshcanhelp/wp-rest-api-auth0/downloads)](https://packagist.org/packages/joshcanhelp/wp-rest-api-auth0)
 
