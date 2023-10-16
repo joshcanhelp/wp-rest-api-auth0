@@ -3,7 +3,7 @@
  * Plugin Name: WP REST API Auth0
  * Plugin URL: https://github.com/joshcanhelp/wp-rest-api-auth0
  * Description: Protect your WordPress REST API with Auth0
- * Version: 3.0.0
+ * Version: 4.0.0
  * Author: Josh Cunningham <josh@joshcanhelp.com>
  * Author URI: https://www.joshcanhelp.com
  *
