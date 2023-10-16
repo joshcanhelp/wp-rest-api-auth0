@@ -22,7 +22,7 @@ add_filter( 'determine_current_user', __NAMESPACE__ . '\\determine_current_user'
 function determine_current_user( $user ) {
 	global $wpdb;
 
-	$debug_mode = defined( '\AUTH0_API_DEBUG' ) && \AUTH0_API_DEBUG;
+	$debug_mode = defined( 'AUTH0_API_DEBUG' ) && \AUTH0_API_DEBUG;
 
 	// Only checked, not saved or output anywhere.
 	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput
