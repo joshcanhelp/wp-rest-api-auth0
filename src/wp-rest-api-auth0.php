@@ -37,11 +37,11 @@ function determine_current_user( $user ) {
 	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-	$auth_header = "";
-	$check_headers = ['Authorization', 'authorization', 'HTTP_AUTHORIZATION', 'REDIRECT_HTTP_AUTHORIZATION'];
-	foreach ($check_headers as $header) {
-		if (isset($_SERVER[$header])) {
-			$auth_header = wp_unslash( $_SERVER[$header] );
+	$auth_header   = '';
+	$check_headers = [ 'Authorization', 'authorization', 'HTTP_AUTHORIZATION', 'REDIRECT_HTTP_AUTHORIZATION' ];
+	foreach ( $check_headers as $header ) {
+		if ( isset( $_SERVER[ $header ] ) ) {
+			$auth_header = wp_unslash( $_SERVER[ $header ] );
 			break;
 		}
 	}
@@ -66,7 +66,7 @@ function determine_current_user( $user ) {
 	// Verify the incoming JWT access token.
 	// Auth0-generated access tokens for users will be ID token shaped.
 	$token_verifier = new \WP_Auth0_IdTokenVerifier(
-		'https://' . \WP_Auth0_Options::Instance()->get('domain') . '/',
+		'https://' . \WP_Auth0_Options::Instance()->get( 'domain' ) . '/',
 		\AUTH0_API_AUDIENCE,
 		new \WP_Auth0_SymmetricVerifier( \AUTH0_API_SIGNING_SECRET )
 	);
@@ -80,8 +80,6 @@ function determine_current_user( $user ) {
 		}
 		return null;
 	}
-
-	
 
 	// We don't have a user to associate this call to.
 	if ( ! $decoded_token['sub'] ) {
