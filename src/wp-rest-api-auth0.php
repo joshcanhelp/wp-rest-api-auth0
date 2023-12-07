@@ -37,15 +37,18 @@ function determine_current_user( $user ) {
 	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	// phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
-	$auth_header = $_SERVER['Authorization'] ??
-		$_SERVER['authorization'] ??
-		$_SERVER['HTTP_AUTHORIZATION'] ??
-		$_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+	$auth_header = "";
+	$check_headers = ['Authorization', 'authorization', 'HTTP_AUTHORIZATION', 'REDIRECT_HTTP_AUTHORIZATION'];
+	foreach ($check_headers as $header) {
+		if (isset($_SERVER[$header])) {
+			$auth_header = wp_unslash( $_SERVER[$header] );
+			break;
+		}
+	}
 	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 
-	$auth_header_raw   = wp_unslash( $auth_header );
 	$auth_header_parts = explode( ' ', $auth_header_raw ?? '' );
 	if ( 'bearer' !== strtolower( $auth_header_parts[0] ) || empty( $auth_header_parts[1] ) ) {
 		if ( $debug_mode ) {
