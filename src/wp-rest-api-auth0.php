@@ -116,24 +116,32 @@ function determine_current_user( $user ) {
 		return null;
 	}
 
-	// Pull the scopes out of the access token and adjust the user accordingly.
-	if ( $decoded_token['scope'] ) {
+	// Restrict capabilities to those present in the access token scopes.
+	// Uses user_has_cap filter — non-destructive, no global mutation required.
+	if ( ! empty( $decoded_token['scope'] ) ) {
 		$access_token_scopes = explode( ' ', $decoded_token['scope'] );
+		$wp_user_id          = $wp_user->ID;
 
 		if ( $debug_mode ) {
 			error_log( 'WP REST API Auth0: Scopes requested - ' . $decoded_token['scope'] );
 		}
 
-		foreach ( $wp_user->allcaps as $cap => $value ) {
-			if ( ! in_array( $cap, $access_token_scopes, true ) ) {
-				$wp_user->allcaps[ $cap ] = 0;
-			}
-		}
-
-		// This is not ideal but there isn't another way to adjust current user caps.
-		global $current_user;
-		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		$current_user = $wp_user;
+		add_filter(
+			'user_has_cap',
+			function ( array $allcaps, array $caps, array $args, \WP_User $user ) use ( $access_token_scopes, $wp_user_id ) {
+				if ( (int) $user->ID !== (int) $wp_user_id ) {
+					return $allcaps;
+				}
+				foreach ( $allcaps as $cap => $granted ) {
+					if ( $granted && ! in_array( $cap, $access_token_scopes, true ) ) {
+						$allcaps[ $cap ] = false;
+					}
+				}
+				return $allcaps;
+			},
+			10,
+			4
+		);
 	}
 
 	if ( $debug_mode ) {
