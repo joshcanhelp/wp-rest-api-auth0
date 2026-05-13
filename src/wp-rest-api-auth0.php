@@ -10,6 +10,42 @@ declare(strict_types=1);
 namespace JoshCanHelp\WordPress\RestApiAuth0;
 
 add_filter( 'determine_current_user', __NAMESPACE__ . '\\determine_current_user', 10, 1 );
+if ( defined( 'AUTH0_API_STRICT_TOKEN_VALIDATION' ) && \AUTH0_API_STRICT_TOKEN_VALIDATION ) {
+	add_filter( 'rest_authentication_errors', __NAMESPACE__ . '\rest_authentication_errors', 10, 1 );
+}
+
+/**
+ * Store or retrieve a deferred Auth0 authentication error.
+ * Only used when AUTH0_API_STRICT_TOKEN_VALIDATION is enabled.
+ * Shared state between determine_current_user and rest_authentication_errors.
+ *
+ * @param \WP_Error|null $error Pass a WP_Error to store it; omit to retrieve.
+ *
+ * @return \WP_Error|null
+ */
+function _auth0_deferred_error( \WP_Error $error = null ): ?\WP_Error {
+	static $deferred = null;
+	if ( null !== $error ) {
+		$deferred = $error;
+	}
+	return $deferred;
+}
+
+/**
+ * Surface a deferred Auth0 token error as a proper REST 401 response.
+ * Hooked to rest_authentication_errors only when AUTH0_API_STRICT_TOKEN_VALIDATION is enabled.
+ *
+ * @param \WP_Error|null|true $result Current authentication result.
+ *
+ * @return \WP_Error|null|true
+ */
+function rest_authentication_errors( $result ) {
+	$auth0_error = _auth0_deferred_error();
+	if ( null !== $auth0_error ) {
+		return $auth0_error;
+	}
+	return $result;
+}
 
 /**
  * Look for and validate Auth0 access tokens on WP REST API routes.
@@ -60,8 +96,11 @@ function determine_current_user( $user ) {
 
 	//
 	// From this point on, we're going to treat the request as OAuth2 protected.
-	// If we cannot validate the token for some reason, the request is processed without auth.
+	// If AUTH0_API_STRICT_TOKEN_VALIDATION is enabled, any token failure returns 401 (RFC 6750 §3.1).
+	// Otherwise, the request falls back to WordPress cookie-based authentication (default behaviour).
 	//
+
+	$strict_mode = defined( 'AUTH0_API_STRICT_TOKEN_VALIDATION' ) && \AUTH0_API_STRICT_TOKEN_VALIDATION;
 
 	// Verify the incoming JWT access token.
 	// Auth0-generated access tokens for users will be ID token shaped.
@@ -78,6 +117,11 @@ function determine_current_user( $user ) {
 		if ( $debug_mode ) {
 			error_log( 'WP REST API Auth0: Access token could not be verified - ' . $e->getMessage() );
 		}
+		if ( $strict_mode ) {
+			_auth0_deferred_error(
+				new \WP_Error( 'rest_auth0_invalid_token', 'Access token could not be verified.', [ 'status' => 401 ] )
+			);
+		}
 		return null;
 	}
 
@@ -85,6 +129,11 @@ function determine_current_user( $user ) {
 	if ( ! $decoded_token['sub'] ) {
 		if ( $debug_mode ) {
 			error_log( 'WP REST API Auth0: No sub claim found in the access token' );
+		}
+		if ( $strict_mode ) {
+			_auth0_deferred_error(
+				new \WP_Error( 'rest_auth0_invalid_token', 'No sub claim found in the access token.', [ 'status' => 401 ] )
+			);
 		}
 		return null;
 	}
