@@ -49,7 +49,7 @@ function determine_current_user( $user ) {
 	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 	// phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotValidated
 
-	$auth_header_parts = explode( ' ', $auth_header_raw ?? '' );
+	$auth_header_parts = explode( ' ', $auth_header ?? '' );
 	if ( 'bearer' !== strtolower( $auth_header_parts[0] ) || empty( $auth_header_parts[1] ) ) {
 		if ( $debug_mode ) {
 			error_log( 'WP REST API Auth0: No access token found in the request' );
@@ -82,7 +82,7 @@ function determine_current_user( $user ) {
 	}
 
 	// We don't have a user to associate this call to.
-	if ( ! $decoded_token['sub'] ) {
+	if ( empty( $decoded_token['sub'] ) ) {
 		if ( $debug_mode ) {
 			error_log( 'WP REST API Auth0: No sub claim found in the access token' );
 		}
@@ -94,15 +94,17 @@ function determine_current_user( $user ) {
 	}
 
 	// Look for a WordPress user with the incoming Auth0 ID.
-	if ( 'client-credentials' === $decoded_token['gty'] ) {
+	if ( 'client-credentials' === ( $decoded_token['gty'] ?? null ) ) {
 		$m2m_client_id = str_replace( '@clients', '', $decoded_token['sub'] );
 		$wp_user       = get_user_by( 'login', $m2m_client_id );
 	} else {
 		$wp_user = current(
 			get_users(
 				[
-					'meta_key'   => $wpdb->prefix . 'auth0_id',
-					'meta_value' => $decoded_token['sub'],
+					'meta_key'     => $wpdb->prefix . 'auth0_id',
+					'meta_value'   => $decoded_token['sub'],
+					'number'       => 1,
+					'count_total'  => false,
 				]
 			)
 		);
@@ -117,7 +119,7 @@ function determine_current_user( $user ) {
 	}
 
 	// Pull the scopes out of the access token and adjust the user accordingly.
-	if ( $decoded_token['scope'] ) {
+	if ( ! empty( $decoded_token['scope'] ) ) {
 		$access_token_scopes = explode( ' ', $decoded_token['scope'] );
 
 		if ( $debug_mode ) {
