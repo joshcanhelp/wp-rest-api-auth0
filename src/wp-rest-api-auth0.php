@@ -12,6 +12,25 @@ namespace JoshCanHelp\WordPress\RestApiAuth0;
 add_filter( 'determine_current_user', __NAMESPACE__ . '\\determine_current_user', 10, 1 );
 
 /**
+ * Read the signing algorithm from a JWT header without validating the signature.
+ *
+ * @param string $token Raw JWT string.
+ *
+ * @return string|null The alg value, or null if the header is malformed.
+ */
+function _get_jwt_algorithm( string $token ): ?string {
+	$parts = explode( '.', $token );
+	if ( 3 !== count( $parts ) ) {
+		return null;
+	}
+	$header = json_decode(
+		base64_decode( strtr( $parts[0], '-_', '+/' ) ),
+		true
+	);
+	return ( is_array( $header ) && isset( $header['alg'] ) ) ? (string) $header['alg'] : null;
+}
+
+/**
  * Look for and validate Auth0 access tokens on WP REST API routes.
  * Hooked to determine_current_user.
  *
@@ -63,12 +82,38 @@ function determine_current_user( $user ) {
 	// If we cannot validate the token for some reason, the request is processed without auth.
 	//
 
-	// Verify the incoming JWT access token.
-	// Auth0-generated access tokens for users will be ID token shaped.
+	// Detect the JWT signing algorithm from the token header to select the right verifier.
+	$alg                = _get_jwt_algorithm( $access_token );
+	$allowed_algorithms = [ 'RS256', 'RS384', 'RS512', 'HS256' ];
+
+	if ( null === $alg || ! in_array( $alg, $allowed_algorithms, true ) ) {
+		if ( $debug_mode ) {
+			error_log( 'WP REST API Auth0: Unsupported or missing JWT algorithm - ' . ( $alg ?? 'none' ) );
+		}
+		return null;
+	}
+
+	$domain = \WP_Auth0_Options::Instance()->get( 'domain' );
+	$issuer = 'https://' . $domain . '/';
+
+	// RS256/RS384/RS512: verify against Auth0 JWKS endpoint (no secret required on the server).
+	// HS256: verify against AUTH0_API_SIGNING_SECRET (legacy / symmetric flow).
+	if ( in_array( $alg, [ 'RS256', 'RS384', 'RS512' ], true ) ) {
+		$verifier_backend = new \WP_Auth0_AsymmetricVerifier( $issuer );
+	} else {
+		if ( ! defined( 'AUTH0_API_SIGNING_SECRET' ) ) {
+			if ( $debug_mode ) {
+				error_log( 'WP REST API Auth0: AUTH0_API_SIGNING_SECRET is not defined but token uses HS256.' );
+			}
+			return null;
+		}
+		$verifier_backend = new \WP_Auth0_SymmetricVerifier( \AUTH0_API_SIGNING_SECRET );
+	}
+
 	$token_verifier = new \WP_Auth0_IdTokenVerifier(
-		'https://' . \WP_Auth0_Options::Instance()->get( 'domain' ) . '/',
+		$issuer,
 		\AUTH0_API_AUDIENCE,
-		new \WP_Auth0_SymmetricVerifier( \AUTH0_API_SIGNING_SECRET )
+		$verifier_backend
 	);
 
 	try {
